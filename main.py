@@ -56,17 +56,19 @@ def add_contact(contacts):
     """Добавляет новый контакт с проверкой валидности данных."""
     name = input("Введите имя: ").strip()
     surname = input("Введите фамилию: ").strip()
+    patronomic = input("Введите отчество: ").strip()
     phone = input_with_validation("Введите номер телефона (например, 123-456-7890): ", is_valid_phone, "Некорректный формат телефона.")
     email = input_with_validation("Введите электронную почту: ", is_valid_email, "Некорректный формат электронной почты.")
 
     # Проверка на дублирование контакта
-    if any(contact['name'] == name and contact['surname'] == surname for contact in contacts):
+    if any(contact['name'] == name and contact['surname'] == surname and contact['patronomic'] == patronomic for contact in contacts):
         print("Контакт с таким именем и фамилией уже существует.")
         return
 
     contact = {
         "name": name,
         "surname": surname,
+        "patronomic": patronomic,
         "phone": phone,
         "email": email
     }
@@ -80,9 +82,10 @@ def remove_contact(contacts):
     """Удаляет контакт по имени и фамилии."""
     name = input("Введите имя для удаления: ").strip()
     surname = input("Введите фамилию для удаления: ").strip()
+    patronomic = input("Введите отчество для удаления: ").strip()
 
     for contact in contacts:
-        if contact['name'] == name and contact['surname'] == surname:
+        if contact['name'] == name and contact['surname'] == surname and contact['patronomic'] == patronomic:
             contacts.remove(contact)
             save_contacts(contacts)
             print(f"Контакт {name} {surname} удален.")
@@ -97,7 +100,7 @@ def view_contacts(contacts):
         print("Список контактов:")
         for contact in contacts:
             if isinstance(contact, dict):  # Проверяем, что каждый контакт — это словарь
-                print(f"- {contact.get('name', 'Не указано')} {contact.get('surname', 'Не указано')}, {contact.get('phone', 'Не указано')}, {contact.get('email', 'Не указано')}")
+                print(f"- {contact.get('name', 'Не указано')} {contact.get('surname', 'Не указано')} {contact.get('patronomic', 'Не указано')}, {contact.get('phone', 'Не указано')}, {contact.get('email', 'Не указано')}")
             else:
                 print("Ошибка: Один из контактов имеет неверную структуру.")
     else:
@@ -108,12 +111,12 @@ def search_contact(contacts):
     """Поиск контактов по имени или фамилии."""
     search_term = input("Введите имя или фамилию для поиска: ").strip().lower()
 
-    results = [contact for contact in contacts if search_term in contact['name'].lower() or search_term in contact['surname'].lower()]
+    results = [contact for contact in contacts if search_term in contact['name'].lower() or search_term in contact['surname'].lower() or search_term in contact['patronomic'].lower()]
 
     if results:
         print("Найденные контакты:")
         for contact in results:
-            print(f"- {contact['name']} {contact['surname']}, {contact['phone']}, {contact['email']}")
+            print(f"- {contact['name']} {contact['surname']} {contact['patronomic']}, {contact['phone']}, {contact['email']}")
     else:
         print(f"Контакты, соответствующие запросу '{search_term}', не найдены.")
 
